@@ -1,0 +1,423 @@
+:root {
+    --font-main: "Inter", "Helvetica Neue", Arial, sans-serif;
+    --blue-600: #2e82ff;        /* primary */
+    --blue-500: #3b8dff;        /* hover */
+    --blue-100: #eaf2ff;        /* light background */
+    --gray-900: #1f2329;
+    --gray-700: #4d525a;
+    --gray-500: #7d8289;
+    --gray-300: #d1d5db;
+    --gray-100: #f7f9fc;
+    --white:     #ffffff;
+  
+    --bg-page: var(--gray-100);
+    --text-main: var(--gray-900);
+    --text-muted: var(--gray-500);
+    --border: var(--gray-300);
+  }
+
+ /* ===== Promo Bar ===== */
+.promo-bar {
+    --h: 2.4rem;
+    background: #4aa4ff; /* 介于 #3085ff 和 #eaf2ff 之间的浅蓝 */
+
+    color: #fff;                 /* 文字白色 */
+    font-weight: 500;
+    font-size: .9rem;
+    line-height: var(--h);
+    overflow: hidden;
+  }
+  .promo-messages {
+    position: relative;
+    height: var(--h);
+  }
+  .promo-message {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: opacity .5s ease, transform .5s ease;
+  }
+  .promo-message.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  
+  
+  /* ---------- Reset & Base ---------- */
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-main);background:var(--bg-page);color:var(--text-main);line-height:1.6}
+  a{text-decoration:none;color:inherit}
+  img{max-width:100%;display:block}
+  .container{max-width:1200px;margin:0 auto;padding:0 1rem}
+  
+  /* ---------- Loading Overlay ---------- */
+  #loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:9999}
+  .loading h2{color:#fff;font-size:.9rem;letter-spacing:.1em;margin-bottom:1rem}
+  .loading span{display:inline-block;width:.7em;height:.7em;margin:.22em;background:var(--blue-600);border-radius:50%;animation:pulse 1s ease-in-out infinite}
+  @keyframes pulse{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
+  
+  /* ---------- Navbar ---------- */
+  nav.navbar{background:var(--white);border-bottom:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.04)}
+  .navbar-brand{font-weight:700;color:var(--blue-600)}
+  .nav-link{color:var(--gray-700)!important;font-weight:600}
+  .nav-link.active,.nav-link:hover{color:var(--blue-600)!important}
+  .navbar-toggler{border:none}
+  .navbar-toggler-icon{filter:invert(50%)}
+  @media(max-width:768px){#nav{background:var(--white)}}
+  
+  /* ---------- Hero (Gradient background) ---------- */
+  .hero-section{
+    height:58vh;display:flex;align-items:center;justify-content:center;position:relative;
+    background:linear-gradient(135deg,var(--blue-600) 0%,var(--blue-500) 50%,#5cabff 100%);
+    color:#fff;text-align:center
+  }
+  .hero-section::after{content:\"\";position:absolute;inset:0;background:rgba(0,0,0,.18)}
+  .hero-content{position:relative;padding:0 1rem;max-width:720px}
+  .hero-content h1{
+    font-family:\"Poppins\",\"Noto Sans TC\",sans-serif;
+    font-size:clamp(2.4rem,6vw,3.2rem);
+    font-weight:700;letter-spacing:.04em;margin-bottom:.8rem;
+    color:#fff;text-shadow:0 4px 10px rgba(0,0,0,.45)
+    
+    
+  }
+
+  .about-section .col-md-4 > .animate-on-scroll {
+    min-height: 120px; /* 或你想要的更大高度 */
+  }
+  
+
+  
+
+  .section-title {
+    position: relative;
+
+  }
+  
+  /* 底线 */
+  .section-title::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;            /* 和文字间距 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;             /* 线的长度 */
+    height: 4px;             /* 线的粗细 */
+    background: rgba(33, 125, 254, 0.8);
+    border-radius: 2px;
+  }
+  
+  .section-subtitle {
+    font-size: 1rem;
+    /* 把 100% 的主蓝调成 70% 不透明，显得更浅柔 */
+    color: rgba(32, 123, 250, 0.8);
+    font-weight: 500;
+    margin-bottom: 2.5rem;
+  }
+
+
+  
+/* ---------- 熱銷產品區塊標題與副標 ---------- */
+.section-title {
+  color: var(--blue-600);
+  font-family: "Poppins","Noto Sans TC",sans-serif;
+  font-weight: 700;
+}
+.section-subtitle {
+  color: rgba(48,133,255,0.7); /* 淡藍 */
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* ---------- 產品圖片自適應顯示 ---------- */
+.product-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;  /* 完整顯示圖片，不裁切 */
+  max-height: 180px;    /* 可自行調整容器最高 */
+  margin: 0 auto 1rem;
+}
+
+/* ---------- 卡片標題字體顏色 ---------- */
+.card h5 {
+  color: var(--gray-900);
+  font-family: "Poppins","Noto Sans TC",sans-serif;
+}
+
+/* （其餘 .card/.price/.btn 樣式沿用你現有設定） */
+
+
+  
+  
+
+/* ===== New Section: Partners & Products ===== */
+.section-title{
+    font-weight:700;
+    color:var(--blue-600);
+  }
+  
+  .brand-logo{
+    width:100%;
+    max-width:120px;
+    filter:grayscale(100%);
+    opacity:.85;
+    transition:opacity .25s,filter .25s;
+  }
+  .brand-logo:hover{
+    filter:grayscale(0);
+    opacity:1;
+  }
+  
+  .products-grid .card{
+    border:1px solid var(--gray-200);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    transition:transform .25s,box-shadow .25s;
+  }
+  .products-grid .card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+  }
+  .products-grid .price{
+    color:var(--blue-600);
+    font-weight:700;
+  }
+
+
+  /* === Hero 字型 & 動畫 ===================================== */
+.hero-content h1{
+    font-family:"Poppins","Noto Sans TC",sans-serif;
+    font-weight:600;
+    font-size:clamp(2.4rem,6vw,3.2rem);
+    letter-spacing:.04em;
+    text-shadow:0 3px 6px rgba(0,0,0,.3);
+     text-shadow:
+        1px  1px 2px rgba(0,0,0,.4),   /* 底部深陰影 */
+        1px -1px 2px rgba(255,255,255,.35), /* 上方亮邊 */
+        2px  2px 4px rgba(0,0,0,.25);  /* 額外柔邊 */
+  }
+  .hero-content p{
+    font-family:"Noto Sans TC",sans-serif;
+    font-size:1.05rem;
+    line-height:1.8;
+    max-width:28rem;
+    margin:0 auto 1.4rem;
+    animation: textFade 6s ease-out forwards;
+    opacity:0;
+  }
+
+  
+
+
+  .hero-content .btn{
+    background:linear-gradient(90deg,#ffffff 0%,#eaf2ff 100%);
+    color:var(--blue-600);
+    padding:.85rem 2.2rem;
+    font-weight:700;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+    transition:transform .2s cubic-bezier(.2,.8,.4,1),box-shadow .2s;
+  }
+  .hero-content .btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 8px 18px rgba(0,0,0,.2);
+  }
+  
+  
+  
+
+
+
+
+  
+  /* ---------- Cards ---------- */
+  .card{background:var(--white);border-radius:10px;border:1px solid var(--border);box-shadow:0 2px 6px rgba(0,0,0,.05);transition:transform .25s,box-shadow .25s}
+  .card:hover{transform:translateY(-4px);box-shadow:0 6px 18px rgba(0,0,0,.08)}
+  .card-body{padding:1rem}
+  .card-title{font-size:1rem;font-weight:600;margin-bottom:.5rem}
+  .price{color:var(--blue-600);font-weight:700}
+  
+  /* ---------- Order Form ---------- */
+  main.order-container{background:var(--white);border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.06);padding:2rem;margin:-80px auto 3rem;max-width:700px}
+  .order-container h1{text-align:center;font-size:1.75rem;font-weight:700;margin-bottom:1.6rem}
+  .menu .item{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-bottom:1px solid var(--border)}
+  .menu .item:last-child{border-bottom:none}
+  .menu .item label{flex:1;font-weight:500}
+  .menu .price{width:4rem;text-align:right;font-weight:600;color:var(--blue-600)}
+  .menu input[type=number]{width:80px;padding:.35rem .4rem;border:1px solid var(--border);border-radius:6px;text-align:center}
+  #summary{margin-top:1.5rem;padding:1rem;background:var(--blue-100);border:1px dashed var(--border);border-radius:6px;min-height:3rem}
+  #summary strong{color:var(--blue-600)}
+  #submitBtn{display:block;width:100%;max-width:220px;margin:1.8rem auto 0;padding:.9rem 1.4rem;background:var(--blue-600);color:#fff;border:none;border-radius:6px;font-size:1rem;font-weight:600;transition:background .25s}
+  #submitBtn:hover:not(:disabled){background:var(--blue-500)}
+  #submitBtn:disabled{background:var(--gray-300);color:var(--gray-500);cursor:not-allowed}
+  
+  /* ---------- Footer ---------- */
+  footer{background:#0d1117;color:var(--gray-300);padding:2.5rem 0;font-size:.9rem}
+  footer a{color:var(--gray-300)}
+  footer a:hover{color:#fff}
+  
+
+  /* --- 覆蓋 Hero 段落：一次淡入 ------------------------------ */
+
+  @keyframes fadeIn{
+    from{opacity:0;transform:translateY(20px);}
+    to  {opacity:1;transform:translateY(0);}
+  }
+
+
+
+
+
+
+
+
+
+  /* promo-bar 与你原有的保持一致 */
+
+/* section 标题统一 */
+.section-title {
+    font-weight: 700;
+    font-size: 1.25rem;
+  }
+  
+  /* Category 圆形按钮 */
+  .category-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    background: var(--white);
+    transition: border .3s;
+    cursor: pointer;
+    font-size: 0.75rem;
+  }
+  .category-btn img {width: 36px;height: 36px;margin-bottom: 4px;}
+  .category-btn.active,
+  .category-btn:hover {border-color: var(--blue-600);}
+  
+  /* Product 卡片 */
+  .product-card {border: 1px solid var(--gray-300);border-radius: 12px;transition: box-shadow .3s;}
+  .product-card:hover {box-shadow: 0 8px 24px rgba(0,0,0,.08);}
+  .product-img {width: 100%;height: 160px;object-fit: contain;}
+  
+  /* Swiper 内部控制箭头颜色  */
+  .swiper-button-prev, .swiper-button-next {color: var(--blue-600);}
+  .swiper-pagination-bullet-active {background: var(--blue-600);}
+  
+  /* Cart Sidebar */
+  .cart-sidebar{
+    position: fixed;right: -380px;top:0;height:100%;width: 380px;
+    background: var(--white);box-shadow: -4px 0 12px rgba(0,0,0,.15);
+    transition: right .4s ease;z-index: 2000;overflow-y:auto;
+  }
+  .cart-sidebar.open{ right:0; }
+  .sidebar-backdrop{
+    position: fixed;inset:0;background:rgba(0,0,0,.45);
+    opacity:0;visibility:hidden;transition: opacity .3s;z-index:1990;
+  }
+  .sidebar-backdrop.show{opacity:1;visibility:visible;}
+  
+
+  /* 三欄固定寬度，手機也三欄 */
+.products-grid .col-4 {flex: 0 0 33.333%;max-width: 33.333%;}
+
+/* 圖片縮小且不裁切 */
+.product-img{width:100%;height:120px;object-fit:contain}
+
+/* 數量控制條 */
+.qty-group{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.btn-qty{
+  width:30px;height:30px;border:1px solid var(--blue-600);
+  border-radius:4px;background:var(--white);color:var(--blue-600);
+  font-weight:700;line-height:1;cursor:pointer;
+}
+.btn-qty:hover{background:var(--blue-100);}
+.qty-group input{
+  width:44px;text-align:center;border:none;font-weight:600;
+  pointer-events:none;background:transparent;
+}
+
+
+/* 讓 bottom-sheet 最高不超過 65vh (視窗高) */
+@media (max-width: 991.98px){
+    .mobile-sheet{
+      max-height: 60vh;            /* ☆ 主要設定 */
+      display: flex;               /* 讓內容可滾動但把拖把固定在上 */
+      flex-direction: column;
+    }
+    .mobile-sheet .handle{
+      flex: 0 0 24px;              /* 拖把區固定高度 */
+    }
+    /* 兩欄排版：姓名 / 電話、公司 / 地址 縮短高度 -------------- */
+    .contact-grid{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .1rem;
+    }
+    .contact-grid .full{          /* 需要整列的欄位加 class="full" */
+      grid-column: 1 / 3;
+    }
+  }
+
+  
+  
+
+/* ============ 隱藏 bottom-sheet 把手 ============ */
+.mobile-sheet .handle{
+    display:none;
+  }
+  
+
+  /* 關閉按鈕：比預設再大一點、沒邊框 */
+.close-summary{
+    width:1.1rem;height:1.1rem;
+    opacity:.7;               /* 淡一點 */
+  }
+  .close-summary:hover{opacity:1}
+  
+
+
+  /* 關於我們區塊專屬 */
+.about-section {
+  font-family: 'Poppins', sans-serif;
+}
+
+.about-section .section-title {
+  font-weight: 600;
+}
+
+.about-section .section-sub {
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.about-section h5 {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.about-section p {
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+/* 預設所有要動畫的元素都先隱藏並往下偏移 */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* 當加上 .in-view 時就淡入＋上移到原位 */
+.animate-on-scroll.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}

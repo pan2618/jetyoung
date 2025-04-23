@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Order | Jet Young</title>
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="styles.css"><!-- 你的主題變數 -->
+
+<style>
+/* ═════ NAVBAR ═════ */
+nav.navbar{background:#fff;border-bottom:1px solid var(--border);}
+
+/* ═════ 產品卡片 ═════ */
+.products-row .col-4{flex:0 0 33.333%;max-width:33.333%}
+.product-card{display:flex;flex-direction:column;align-items:center;min-height:340px;padding:18px}
+.product-img{width:100%;height:120px;object-fit:contain}
+.qty-group{display:flex;align-items:center;gap:6px}
+.btn-qty{width:30px;height:30px;border:1px solid var(--blue-600);border-radius:4px;background:#fff;color:var(--blue-600);font-weight:700}
+.btn-qty:hover{background:var(--blue-100)}
+.qty-input{width:44px;text-align:center;border:none;background:transparent;font-weight:600}
+.card.product-card{transition:box-shadow .25s}
+.card.product-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
+
+/* 標題底線 */
+.section-title{font-weight:700;color:var(--blue-600);position:relative;display:inline-block}
+.section-title::after{content:"";position:absolute;left:0;bottom:-4px;width:100%;height:3px;background:var(--blue-300,#8dc7ff);border-radius:2px}
+.section-sub{color:var(--blue-400,#4da4ff);font-size:.95rem}
+
+/* ═════ Sticky / Bottom-sheet Summary ═════ */
+@media(min-width:992px){.order-summary-sticky{position:sticky;top:100px}}
+
+@media(max-width:991.98px){
+  .mobile-sheet{position:fixed;left:0;right:0;bottom:0;z-index:2000;background:#fff;box-shadow:0 -4px 12px rgba(0,0,0,.15);border-radius:16px 16px 0 0;transform:translateY(calc(100% - 54px));transition:.35s;max-height:65vh;display:flex;flex-direction:column;}
+  .mobile-sheet.open{transform:translateY(0)}
+  .mobile-sheet .handle{width:42px;height:4px;background:#ccc;border-radius:2px;margin:6px auto 10px}
+  .sheet-body{flex:1 1 auto;overflow-y:auto;padding:0 1rem 1.25rem}
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+  .contact-grid .full{grid-column:1/3}
+}
+
+/* Loading overlay */
+#loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:3000}
+.loading h2{color:#fff;font-size:.9rem;letter-spacing:.1em;margin-bottom:1rem}
+.loading span{display:inline-block;width:.7em;height:.7em;margin:.22em;background:var(--blue-600);border-radius:50%;animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
+</style>
+</head>
+<body>
+<!-- Loading -->
+<div id="loading-overlay">
+  <div class="loading"><h2>LOADING…</h2><span></span><span></span><span></span><span></span><span></span></div>
+</div>
+
+<!-- Promo-bar -->
+<div class="promo-bar">
+  <div class="promo-messages">
+    <div class="promo-message">🎉 本週限時：全館結帳輸入【SALE20】享 20% 折扣！</div>
+    <div class="promo-message">📢 新品上架：有機沙拉醬即日起開放預購！</div>
+    <div class="promo-message">🚚 滿 $1,000 免運費，立即下單省運費！</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-primary" href="index.html">JET YOUNG</a>
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link active" href="order.html">Order</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="container py-5">
+
+  <h5 class="section-title mb-1">會員下單區</h5>
+  <p  class="section-sub  mb-4">選購完，只要點擊送出按鈕我們就會收到您的訂單！</p>
+
+  <div class="row g-4 products-row mb-5">
+    <!-- 只示範 3 張，其餘請照此模式複製貼上 -->
+    <div class="col-4"><div class="card product-card text-center">
+      <img src="images/product1.jpg" class="product-img" alt="Latte">
+      <h6 class="fw-semibold mt-3 mb-1">Latte</h6>
+      <div class="price text-primary fw-bold mb-2">$120</div>
+      <div class="qty-group mb-2" data-key="latte">
+        <button class="btn-qty minus">−</button>
+        <input class="qty-input" id="latte" name="latte" type="number" value="0" readonly>
+        <button class="btn-qty plus">＋</button>
+      </div>
+      <small class="text-muted">點擊「＋」即可新增</small>
+    </div></div>
+
+    <div class="col-4"><div class="card product-card text-center">
+      <img src="images/product2.jpg" class="product-img" alt="Americano">
+      <h6 class="fw-semibold mt-3 mb-1">Americano</h6>
+      <div class="price text-primary fw-bold mb-2">$90</div>
+      <div class="qty-group mb-2" data-key="americano">
+        <button class="btn-qty minus">−</button>
+        <input class="qty-input" id="americano" name="americano" type="number" value="0" readonly>
+        <button class="btn-qty plus">＋</button>
+      </div>
+      <small class="text-muted">點擊「＋」即可新增</small>
+    </div></div>
+
+    <div class="col-4"><div class="card product-card text-center">
+      <img src="images/product4.jpg" class="product-img" alt="Cappuccino">
+      <h6 class="fw-semibold mt-3 mb-1">Cappuccino</h6>
+      <div class="price text-primary fw-bold mb-2">$110</div>
+      <div class="qty-group mb-2" data-key="cappuccino">
+        <button class="btn-qty minus">−</button>
+        <input class="qty-input" id="cappuccino" name="cappuccino" type="number" value="0" readonly>
+        <button class="btn-qty plus">＋</button>
+      </div>
+      <small class="text-muted">點擊「＋」即可新增</small>
+    </div></div>
+    <!-- …其餘卡片照此模式貼上… -->
+    <div class="col-4"><div class="card product-card text-center">
+        <img src="images/product4.jpg" class="product-img" alt="Cappuccino">
+        <h6 class="fw-semibold mt-3 mb-1">Cappuccino</h6>
+        <div class="price text-primary fw-bold mb-2">$110</div>
+        <div class="qty-group mb-2" data-key="cappuccino">
+          <button class="btn-qty minus">−</button>
+          <input class="qty-input" id="cappuccino" name="cappuccino" type="number" value="0" readonly>
+          <button class="btn-qty plus">＋</button>
+        </div>
+        <small class="text-muted">點擊「＋」即可新增</small>
+      </div></div>
+
+      <div class="col-4"><div class="card product-card text-center">
+        <img src="images/product4.jpg" class="product-img" alt="Cappuccino">
+        <h6 class="fw-semibold mt-3 mb-1">Cappuccino</h6>
+        <div class="price text-primary fw-bold mb-2">$110</div>
+        <div class="qty-group mb-2" data-key="cappuccino">
+          <button class="btn-qty minus">−</button>
+          <input class="qty-input" id="cappuccino" name="cappuccino" type="number" value="0" readonly>
+          <button class="btn-qty plus">＋</button>
+        </div>
+        <small class="text-muted">點擊「＋」即可新增</small>
+      </div></div>
+
+      <div class="col-4"><div class="card product-card text-center">
+        <img src="images/product4.jpg" class="product-img" alt="Cappuccino">
+        <h6 class="fw-semibold mt-3 mb-1">Cappuccino</h6>
+        <div class="price text-primary fw-bold mb-2">$110</div>
+        <div class="qty-group mb-2" data-key="cappuccino">
+          <button class="btn-qty minus">−</button>
+          <input class="qty-input" id="cappuccino" name="cappuccino" type="number" value="0" readonly>
+          <button class="btn-qty plus">＋</button>
+        </div>
+        <small class="text-muted">點擊「＋」即可新增</small>
+      </div></div>
+      <div class="col-4"><div class="card product-card text-center">
+        <img src="images/product4.jpg" class="product-img" alt="Cappuccino">
+        <h6 class="fw-semibold mt-3 mb-1">Cappuccino</h6>
+        <div class="price text-primary fw-bold mb-2">$110</div>
+        <div class="qty-group mb-2" data-key="cappuccino">
+          <button class="btn-qty minus">−</button>
+          <input class="qty-input" id="cappuccino" name="cappuccino" type="number" value="0" readonly>
+          <button class="btn-qty plus">＋</button>
+        </div>
+        <small class="text-muted">點擊「＋」即可新增</small>
+      </div></div>
+      <div class="col-4"><div class="card product-card text-center">
+        <img src="images/product4.jpg" class="product-img" alt="Cappuccino">
+        <h6 class="fw-semibold mt-3 mb-1">Cappuccino</h6>
+        <div class="price text-primary fw-bold mb-2">$110</div>
+        <div class="qty-group mb-2" data-key="cappuccino">
+          <button class="btn-qty minus">−</button>
+          <input class="qty-input" id="cappuccino" name="cappuccino" type="number" value="0" readonly>
+          <button class="btn-qty plus">＋</button>
+        </div>
+        <small class="text-muted">點擊「＋」即可新增</small>
+      </div></div>
+  </div>
+
+  <!-- ===== Desktop Summary (右欄) ===== -->
+  <div class="row">
+    <div class="col-lg-8"></div>
+    <div class="col-lg-4">
+      <div class="order-summary-sticky d-none d-lg-block">
+        <div id="desktopSummary"></div>
+      </div>
+      <!-- ===== Mobile Bottom-sheet ===== -->
+      <div class="mobile-sheet d-lg-none" id="mobileSheet">
+        <div class="handle"></div>
+        <div class="sheet-body px-2" id="mobileSummary"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 隱藏送出表單 -->
+<form id="orderForm" action="https://formspree.io/f/xdkonwgk" method="POST" style="display:none;">
+  <input id="latte"      name="latte"      type="number" value="0">
+  <input id="americano"  name="americano"  type="number" value="0">
+  <input id="souffle"    name="souffle"    type="number" value="0">
+  <input id="cappuccino" name="cappuccino" type="number" value="0">
+  <input id="espresso"   name="espresso"   type="number" value="0">
+  <input id="mocha"      name="mocha"      type="number" value="0">
+  <input id="caramac"    name="caramac"    type="number" value="0">
+  <input id="coldbrew"   name="coldbrew"   type="number" value="0">
+  <input id="hazel"      name="hazel"      type="number" value="0">
+  <input id="vanilla"    name="vanilla"    type="number" value="0">
+  <input type="hidden" id="order_summary" name="order_summary">
+  <input type="hidden" name="_subject" value="🛒 New Order!">
+</form>
+
+<footer class="bg-dark text-white text-center py-4 mt-5">© 2025 Jet Young</footer>
+
+<!-- ═════ Scripts ═════ -->
+<script>
+  // ==== 簡易 Link-Only 保護機制 ====
+  // 自訂一組只有你知道的 token
+  const ALLOWED_TOKEN = "mySuperSecretToken123";
+  // 從網址查 token
+  const urlToken = new URLSearchParams(location.search).get("token");
+  // 如果不一樣，就直接顯示錯誤並中斷後續
+  if (urlToken !== ALLOWED_TOKEN) {
+    document.write(`
+      <div style="padding:2rem;
+                  font-size:1.2rem;
+                  text-align:center;
+                  color:#333;">
+        🔒 未經授權，請使用正確連結存取本頁
+      </div>`);
+    throw new Error("Unauthorized");
+  }
+  </script>
+  
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* 商品設定 */
+const items = [
+  { k:'latte',      n:'Latte',             p:120 },
+  { k:'americano',  n:'Americano',         p:90  },
+  { k:'souffle',    n:'Matcha Souffle',    p:150 },
+  { k:'cappuccino', n:'Cappuccino',        p:110 },
+  { k:'espresso',   n:'Espresso',          p:85  },
+  { k:'mocha',      n:'Mocha',             p:130 },
+  { k:'caramac',    n:'Caramel Macchiato', p:140 },
+  { k:'coldbrew',   n:'Cold Brew',         p:100 },
+  { k:'hazel',      n:'Hazelnut Latte',    p:135 },
+  { k:'vanilla',    n:'Vanilla Latte',     p:135 },
+];
+
+/* DOM 參照 */
+const f     = document.getElementById('orderForm');
+const desk  = document.getElementById('desktopSummary');
+const mob   = document.getElementById('mobileSummary');
+const sheet = document.getElementById('mobileSheet');
+
+/* util：文字摘要（寄信用） */
+function buildLines(){
+  let total=0, lines=[];
+  items.forEach(({k,n,p})=>{
+    const el = f.elements[k];
+    if (!el) return;
+    const q = +el.value || 0;
+    if (q) {
+      lines.push(`${n} × ${q} = $${q*p}`);
+      total += q*p;
+    }
+  });
+  return lines.length
+    ? [...lines,'—'.repeat(40),`Total $${total}`].join('\n')
+    : '';
+}
+
+/* 明細＋表單版型 */
+function template(total, html){
+  return `
+    <div class="text-end">
+      <button type="button" class="btn-close close-summary"></button>
+    </div>
+    <h5 class="text-primary fw-bold mb-3">訂單明細</h5>
+    ${html}
+    <hr>
+    <div class="d-flex justify-content-between fw-bold mb-3">
+      <span>總計</span><span>$${total}</span>
+    </div>
+    <div class="contact-grid mb-3">
+      <input  class="form-control" name="customer_name"  placeholder="收件人姓名*" required>
+      <input  class="form-control" name="customer_phone" placeholder="電話*"       required>
+      <input  class="form-control full" name="customer_company" placeholder="公司 (可留空)">
+      <textarea class="form-control full" name="customer_addr" rows="2" placeholder="地址*" required></textarea>
+    </div>
+    <small class="text-muted d-block mb-3">＊貨到付款，司機收款</small>
+    <button class="btn btn-primary w-100" id="submitBtn" disabled>送出訂單</button>`;
+}
+
+/* 渲染訂單明細 */
+function render(box){
+  let total=0, itemHTML='';
+  items.forEach(({k,n,p})=>{
+    const el = f.elements[k];
+    if (!el) return;
+    const q = +el.value || 0;
+    if (q) {
+      itemHTML += `<div class="d-flex justify-content-between mb-2">
+                     <span>${n} × ${q}</span><span>$${q*p}</span>
+                   </div>`;
+      total += q*p;
+    }
+  });
+  box.innerHTML = itemHTML 
+    ? template(total, itemHTML)
+    : '<p class="text-center text-muted mb-0">(尚未選購)</p>';
+}
+
+/* 更新數量 */
+function setQty(key, val){
+  const el = f.elements[key];
+  if (!el) return;
+  el.value = val;
+  document.querySelectorAll(`#${key}.qty-input`).forEach(i=>i.value=val);
+  f.order_summary.value = buildLines();
+  render(desk); render(mob);
+  validate();
+  if (window.innerWidth<992 && val>0) sheet.classList.add('open');
+}
+
+/* 驗證送出按鈕 */
+function validate(){
+  const hasItem = items.some(({k})=> +f.elements[k]?.value );
+  const requiredOK = [...f.elements]
+    .filter(el=> el.required)
+    .every(el=> el.value.trim());
+  document.querySelectorAll('#submitBtn')
+    .forEach(b=> b.disabled = !(hasItem && requiredOK));
+}
+
+/* 綁定 ± 按鈕 */
+document.querySelectorAll('.qty-group').forEach(g=>{
+  const key = g.dataset.key, inp = f.elements[key];
+  g.querySelector('.plus').onclick  = ()=> setQty(key, +inp.value+1);
+  g.querySelector('.minus').onclick = ()=> setQty(key, Math.max(0, +inp.value-1));
+});
+
+/* 即時驗證客戶欄 */
+document.body.addEventListener('input', e=>{
+  if (e.target.form === f) validate();
+});
+
+/* 送出訂單 */
+document.body.addEventListener('click', e=>{
+  if (e.target.id === 'submitBtn') {
+    e.preventDefault();
+    // 重建文字摘要
+    const orderText = buildLines();
+    f.order_summary.value = orderText;
+
+    // 自訂 FormData：只帶已購買項目 + 客戶欄
+    const fd = new FormData();
+    items.forEach(({k,n})=>{
+      const qty = +f.elements[k].value || 0;
+      if (qty) fd.append(n, qty);
+    });
+    // 找到按鈕所在的 summary 容器
+    const container = e.target.closest('#desktopSummary, #mobileSummary');
+    ['customer_name','customer_phone','customer_company','customer_addr']
+      .forEach(name=>{
+        const el = container.querySelector(`[name="${name}"]`);
+        if (el && el.value.trim()) fd.append(name, el.value.trim());
+      });
+    fd.append('order_summary', orderText);
+
+    fetch(f.action, { method:'POST', body:fd, headers:{Accept:'application/json'} })
+      .then(()=>{ alert('已送出，感謝您的訂購！'); reset(); })
+      .catch(()=> alert('送出失敗，請稍後再試'));
+  }
+});
+
+/* 清空 */
+function reset(){
+  items.forEach(({k})=> setQty(k,0));
+  f.reset();
+  render(desk); render(mob);
+  sheet.classList.remove('open');
+}
+
+/* Bottom-sheet 把手 */
+sheet.addEventListener('click', e=>{
+  if (e.target.classList.contains('handle')) sheet.classList.toggle('open');
+});
+
+/* 桌機版關閉明細 */
+document.body.addEventListener('click', e=>{
+  if (e.target.classList.contains('close-summary'))
+    sheet.classList.remove('open');
+});
+
+/* Promo-bar 跑馬燈 */
+document.addEventListener('DOMContentLoaded',()=>{
+  const msgs = document.querySelectorAll('.promo-bar .promo-message');
+  if (!msgs.length) return;
+  let i=0; msgs[0].classList.add('active');
+  setInterval(()=>{
+    msgs[i].classList.remove('active');
+    i = (i+1)%msgs.length;
+    msgs[i].classList.add('active');
+  }, 3500);
+});
+
+/* Loading overlay */
+window.addEventListener('load', ()=>{
+  const ov = document.getElementById('loading-overlay');
+  if (ov) setTimeout(()=> ov.style.display='none', 800);
+});
+
+/* 初始渲染 */
+render(desk); render(mob); validate();
+</script>
+</body>
+</html>
