@@ -642,10 +642,28 @@ body {
 /* 3. 數量區塊跟「點擊 + 即可新增」字樣都再貼近點 */
 .qty-group{ margin-bottom: 4px; }
 .product-card small{ font-size: .8rem; }
+/* === 手機端卡片緊湊版（≤767.98px）==================== */
+@media (max-width: 767.98px){
+  /* 1. 去掉固定高度、縮小內距 */
+  .product-card{
+    min-height: auto;      /* 解除 340px */
+    padding: 12px 10px;
+  }
 
-/* 4. 超小螢幕 (≤ 420px) 再更緊湊 —— 看需求可刪 */
-@media (max-width: 420px){
-  .product-img{ height: 80px; }
-  .product-card h6{ font-size: .9rem; margin-bottom: 2px; }
-  .price{ font-size: .9rem; }
+  /* 2. 圖片高度從 120 → 90px，仍保持 object-fit: contain */
+  .product-img{
+    height: 90px;
+    margin-bottom: .5rem;  /* 圖跟文字間距再縮一點 */
+  }
+
+  /* 3. 標題／價格／備註字級稍微縮小 */
+  .product-card h6{ font-size: .9rem; }
+  .product-card .price{ font-size: .95rem; }
+  .product-card small{ font-size: .75rem; }
+
+  /* 4. 數量按鈕改成 26×26，避免卡到卡片邊線 */
+  .btn-qty{
+    width: 26px; height: 26px;
+    line-height: 24px;     /* 讓「＋」「−」垂直置中 */
+  }
 }
