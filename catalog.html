@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>商品展示 | Jet Young</title>
+  <!-- Bootstrap 5 -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <!-- Swiper -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/swiper/swiper-bundle.min.css"
+  />
+
+  <style>
+    /* —— 全局變數 & Reset —— */
+    :root {
+      --font-main: "Inter", "Helvetica Neue", Arial, sans-serif;
+      --blue-600: #2e82ff;
+      --blue-500: #3b8dff;
+      --blue-100: #eaf2ff;
+      --gray-900: #1f2329;
+      --gray-700: #4d525a;
+      --gray-500: #7d8289;
+      --gray-300: #d1d5db;
+      --gray-100: #f7f9fc;
+      --white: #ffffff;
+      --border: var(--gray-300);
+    }
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      font-family: var(--font-main);
+      background: var(--gray-100);
+      color: var(--gray-900);
+      line-height: 1.6;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+
+    /* —— Loading Overlay —— */
+    #loading-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.55);
+      display: flex; align-items:center; justify-content:center;
+      z-index: 9999;
+    }
+    .loading h2 {
+      color: #fff;
+      font-size: .9rem;
+      letter-spacing:.1em;
+      margin-bottom:1rem;
+    }
+    .loading span {
+      display:inline-block;
+      width:.7em; height:.7em;
+      margin:.22em;
+      background: var(--blue-600);
+      border-radius:50%;
+      animation:pulse 1s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:.3 } 50% { opacity:1 }
+    }
+
+    /* —— Promo-bar —— */
+    .promo-bar {
+      --h:2.4rem;
+      height: var(--h);
+      background: var(--blue-600);
+      color: #fff;
+      font-weight:500;
+      font-size:.9rem;
+      overflow:hidden;
+      position: relative;
+    }
+    .promo-messages { position: relative; height: var(--h); }
+    .promo-message {
+      position:absolute; top:0; left:0; right:0;
+      text-align:center;
+      opacity:0;
+      transform: translateY(100%);
+      transition: opacity .5s, transform .5s;
+    }
+    .promo-message.active {
+      opacity:1;
+      transform: translateY(0);
+    }
+
+    /* —— Navbar —— */
+    nav.navbar {
+      background: var(--white);
+      border-bottom:1px solid var(--border);
+      box-shadow:0 1px 4px rgba(0,0,0,.04);
+    }
+    .navbar-brand {
+      font-weight:700;
+      color: var(--blue-600) !important;
+    }
+    .nav-link {
+      color: var(--gray-700) !important;
+      font-weight:600;
+    }
+    .nav-link.active,
+    .nav-link:hover {
+      color: var(--blue-600) !important;
+    }
+    .navbar-toggler { border:none; }
+    .navbar-toggler-icon { filter:invert(50%); }
+
+    /* —— Category Scroll —— */
+    .cat-swiper .swiper-slide {
+      width:auto; text-align:center;
+    }
+    .cat-btn {
+      display:block; padding:.5rem;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:50%;
+      width:80px; height:80px;
+      cursor:pointer;
+      transition: border .3s;
+    }
+    .cat-btn img {
+      width:36px; height:36px;
+      margin-bottom:.25rem;
+    }
+    .cat-btn.active,
+    .cat-btn:hover {
+      border-color: var(--blue-600);
+    }
+
+    /* —— Hero Carousel —— */
+    .hero-swiper .swiper-slide img {
+      width:100%; height:auto;
+      object-fit:cover;
+      border-radius:8px;
+    }
+
+    /* —— Deal Section —— */
+    .deal-title {
+      font-size:1.25rem;
+      font-weight:700;
+      border-bottom:2px solid var(--blue-600);
+      display:inline-block;
+      margin-bottom:1rem;
+    }
+    .deal-card {
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:8px;
+      overflow:hidden;
+      transition:box-shadow .3s;
+    }
+    .deal-card:hover {
+      box-shadow:0 6px 18px rgba(0,0,0,.08);
+    }
+    .deal-card img {
+      width:100%; height:140px;
+      object-fit:contain;
+      background:#fff;
+    }
+    .deal-info {
+      padding:.5rem;
+      text-align:center;
+    }
+    .deal-info h6 {
+      margin:.5rem 0 .25rem;
+      font-size:1rem;
+    }
+    .deal-info .price {
+      color:var(--blue-600);
+      font-weight:700;
+      margin-bottom:.5rem;
+    }
+    .badge-sale {
+      position:absolute; top:8px; right:8px;
+      background:var(--blue-600);
+      color:#fff;
+      font-size:.75rem;
+      padding:.2rem .4rem;
+      border-radius:4px;
+    }
+
+    /* —— Brands Grid —— */
+    .brand-logo {
+      filter:grayscale(100%);
+      opacity:.7;
+      transition:filter .3s,opacity .3s;
+      max-width:120px;
+      margin:auto;
+    }
+    .brand-logo:hover {
+      filter:none; opacity:1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading -->
+  <div id="loading-overlay">
+    <div class="loading">
+      <h2>LOADING…</h2>
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <!-- Promo-bar -->
+  <div class="promo-bar">
+    <div class="promo-messages">
+      <div class="promo-message">🎉 本週限時：全館結帳輸入【SALE20】享 20% 折扣！</div>
+      <div class="promo-message">📢 新品上架：有機沙拉醬即日起開放預購！</div>
+      <div class="promo-message">🚚 滿 $1,000 免運費，立即下單省運費！</div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">JET YOUNG</a>
+      <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item">
+            <a id="orderLink"
+               class="nav-link disabled"
+               href="order.html"
+               aria-disabled="true">
+              Order
+            </a>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="order.html">Catalog</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('orderLink');
+      // 讀 flag，看有沒有進過 order.html
+      const visited = localStorage.getItem('hasVisitedOrderPage') === 'true';
+      if (visited) {
+        // 解除 disabled
+        btn.classList.remove('disabled');
+        btn.removeAttribute('aria-disabled');
+        // （若之前綁過 preventDefault，也可拿掉 listener）
+      } else {
+        // 確保 disabled，並阻擋跳轉
+        btn.classList.add('disabled');
+        btn.setAttribute('aria-disabled', 'true');
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          alert('請透過指定連結進入訂單頁面');
+        });
+      }
+    });
+        document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('orderLink');
+      // 看之前有沒有進過訂單頁（order.html）
+      const visited = localStorage.getItem('hasVisitedOrderPage') === 'true';
+
+      if (visited) {
+        // 已經開過 → 解禁
+        btn.classList.remove('disabled');
+        btn.removeAttribute('aria-disabled');
+      } else {
+        // 還沒開過 → 確保 disabled，並記得阻擋預設跳轉
+        btn.classList.add('disabled');
+        btn.setAttribute('aria-disabled', 'true');
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          alert('請先透過指定連結進入訂單頁面');
+        });
+      }
+    });
+    </script>
+
+
+  <!-- Categories (放 Navbar 底下) -->
+  <div class="container py-3">
+    <div class="swiper cat-swiper mb-4">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <button class="cat-btn active" data-cat="all">全部</button>
+        </div>
+        <div class="swiper-slide">
+          <button class="cat-btn" data-cat="latte">Latte</button>
+        </div>
+        <div class="swiper-slide">
+          <button class="cat-btn" data-cat="americano">Americano</button>
+        </div>
+        <div class="swiper-slide">
+          <button class="cat-btn" data-cat="cappuccino">Cappuccino</button>
+        </div>
+        <!-- …其餘分類按鈕… -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Deals Section -->
+  <div class="container">
+    <div class="mb-4">
+      <span class="deal-title">Grab the best deal on <u>Smartphones</u></span>
+      <a href="#" class="float-end small text-decoration-none">View All &gt;</a>
+    </div>
+    <div class="swiper deal-swiper mb-5">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide position-relative" data-cat="latte">
+          <div class="deal-card">
+            <img src="https://via.placeholder.com/200x140?text=Phone+1" alt="">
+            <div class="deal-info">
+              <h6>Galaxy S22 Ultra</h6>
+              <div class="price">₹32999</div>
+              <small class="text-success">Save - ₹3299</small>
+            </div>
+          </div>
+          <span class="badge-sale">56% OFF</span>
+        </div>
+        <div class="swiper-slide position-relative" data-cat="americano">
+          <div class="deal-card">
+            <img src="https://via.placeholder.com/200x140?text=Phone+2" alt="">
+            <div class="deal-info">
+              <h6>Galaxy M13</h6>
+              <div class="price">₹10499</div>
+              <small class="text-success">Save - ₹4500</small>
+            </div>
+          </div>
+          <span class="badge-sale">56% OFF</span>
+        </div>
+        <!-- …其他 swiper-slide（帶 data-cat）… -->
+      </div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div>
+  </div>
+
+    <!-- Top Electronics Brands 區塊 -->
+    <div class="mb-4">
+      <span class="deal-title">Top <u>Electronics Brands</u></span>
+      <a href="#" class="float-end small text-decoration-none">View All &gt;</a>
+    </div>
+  
+    <div class="row g-4 text-center">
+      <!-- 商品卡片（帶背景） -->
+      <div class="swiper-slide">
+        <div class="catalog-card" data-id="1">
+          <img src="images/195184_1.jpg" class="product-img" alt="Latte">
+          <div class="info">
+            <h6>Latte</h6>
+            <div class="price">$120</div>
+            <p class="desc">經典拿鐵，香醇順口，奶泡綿密。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 複製上面的 <div class="col-..."> … </div> 並依序修改 data-id, 圖片、標題、價格、說明 -->
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="catalog-card" data-id="2">
+          <img src="https://via.placeholder.com/200x120?text=Espresso" alt="Espresso">
+          <div class="info">
+            <h6>Espresso</h6>
+            <div class="price">$85</div>
+            <p class="desc">濃郁香醇，小巧精緻。</p>
+          </div>
+        </div>
+      </div>
+  
+      <!-- …更多商品卡片… -->
+    </div>
+  
+
+
+
+  <!-- Bootstrap & Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  <script>
+    // Loading overlay 淡出
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => document.getElementById('loading-overlay').style.display = 'none', 500);
+    });
+
+    // Promo-bar 跑馬
+    document.addEventListener("DOMContentLoaded", () => {
+      const msgs = document.querySelectorAll(".promo-bar .promo-message");
+      if (!msgs.length) return;
+      let idx = 0;
+      msgs[0].classList.add("active");
+      setInterval(() => {
+        msgs[idx].classList.remove("active");
+        idx = (idx + 1) % msgs.length;
+        msgs[idx].classList.add("active");
+      }, 3500);
+    });
+
+    // Hero Swiper
+    new Swiper('.hero-swiper', {
+      loop: true,
+      autoplay: { delay: 4000 },
+      navigation: {
+        nextEl: '.hero-swiper .swiper-button-next',
+        prevEl: '.hero-swiper .swiper-button-prev'
+      },
+    });
+
+    // Deals Swiper
+    const dealSwiper = new Swiper('.deal-swiper', {
+      slidesPerView: 4,
+      spaceBetween: 16,
+      navigation: {
+        nextEl: '.deal-swiper .swiper-button-next',
+        prevEl: '.deal-swiper .swiper-button-prev'
+      },
+      breakpoints: {
+        0:   { slidesPerView: 1.2 },
+        576: { slidesPerView: 2 },
+        768: { slidesPerView: 3 },
+        992: { slidesPerView: 4 }
+      }
+    });
+
+    // Category Filter
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const cat = btn.dataset.cat;
+        document.querySelectorAll('.deal-swiper .swiper-slide')
+          .forEach(slide => {
+            const ok = (cat === 'all' || slide.dataset.cat === cat);
+            slide.style.display = ok ? '' : 'none';
+          });
+        dealSwiper.update();
+      });
+    });
+
+    // Initialize Category Scroll
+    new Swiper('.cat-swiper', {
+      slidesPerView: 'auto',
+      spaceBetween: 12,
+      freeMode: true
+    });
+
+    // 先保留一個變數記當前打開的 id
+let openDetailId = null;
+
+document.querySelectorAll('.catalog-card').forEach(card => {
+  card.addEventListener('click', () => {
+    // 如果已有面板，先移除
+    const old = document.querySelector('.detail-panel');
+    if (old) old.remove();
+
+    // 從 data-id 決定要顯示哪個商品
+    const id = card.dataset.id;
+    const data = {
+      1: {
+        img: 'https://via.placeholder.com/300x200?text=Latte+Detail',
+        price: 120,
+        desc: '這是 Latte 的詳細介紹…'
+      },
+      // id 2,3…以此類推
+    }[id];
+
+    // 建立 detail-panel
+    const panel = document.createElement('div');
+    panel.className = 'detail-panel';
+    panel.innerHTML = `
+      <button class="close-btn">&times;</button>
+      <img src="${data.img}" alt="">
+      <h5>售價：$${data.price}</h5>
+      <p>${data.desc}</p>
+    `;
+
+    // 綁定關閉
+    panel.querySelector('.close-btn')
+         .addEventListener('click', () => panel.remove());
+
+    // 插入到卡片後面
+    card.after(panel);
+    panel.scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+});
+
+
+
+  </script>
+</body>
+</html>
