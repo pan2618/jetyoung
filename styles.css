@@ -593,7 +593,7 @@ body {
     transform:translateY(calc(100% - 60px));
     transition:transform .35s ease;
     /* ❷ 打開時最多佔  視窗 */
-    height:45vh;              
+    height:48vh;              
     display:flex;
     flex-direction:column;
   }
@@ -650,6 +650,13 @@ body {
     line-height: 15px;     /* 讓「＋」「−」垂直置中 */
   }
 }
+/* disabled 樣式：灰色、不能點、游標不可用 */
+.nav-link.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
 
 
 
