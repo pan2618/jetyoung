@@ -117,7 +117,8 @@
 </nav>
 
 <!-- MAIN -->
-<div class="container py-5">
+<div class="container">
+  <p></p>
 
   <h5 class="section-title mb-1">會員下單區</h5>
   <p  class="section-sub  mb-4">選購完，只要點擊送出按鈕我們就會收到您的訂單！</p>
@@ -474,6 +475,50 @@ ${摘要}
   render(desk);
   render(mob);
   validate();
+
+  /* ------- 監聽所有 input，檢查必填 ------- */
+document.addEventListener('input', () => validate());
+
+/* ------- 新版 validate -------- */
+function validate () {
+
+  /* ① 是否已選購任何商品？ */
+  const hasItem = items.some(({k}) => +f.elements[k].value );
+
+  /* ② 目前畫面上是哪個摘要區？ */
+  const area = window.innerWidth < 992 ? mob : desk;
+
+  /* ③ 收件人 + 地址 皆已填？（只檢查這兩格） */
+  const filled = ['customer_name','customer_addr']
+                  .every(n => area.querySelector(`[name="${n}"]`)?.value.trim());
+
+  /* ④ 同步按鈕狀態 */
+  document.querySelectorAll('#submitBtn')
+          .forEach(btn => btn.disabled = !(hasItem && filled));
+}
+
+
+  /* ------- 點擊空白處收合 bottom-sheet ------- */
+document.addEventListener('click', e=>{
+  if (window.innerWidth >= 992) return;           // 只在手機
+
+});
+
+/* ------- 點擊空白處收合 bottom-sheet ------- */
+document.addEventListener('click', e=>{
+  if (window.innerWidth >= 992) return;            // 只在手機
+  /* ❶ 已展開 ❷ 點擊不在明細 ❸ 點擊也不在數量控制區 才收合 */
+  if (
+    sheet.classList.contains('open') &&
+    !e.target.closest('.mobile-sheet') &&
+    !e.target.closest('.qty-group')        // ← 新增這行
+  ){
+    sheet.classList.remove('open');
+  }
+});
+
+
+
   </script>
 
 </body>
