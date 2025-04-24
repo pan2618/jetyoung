@@ -349,7 +349,7 @@
 /* 讓 bottom-sheet 最高不超過 65vh (視窗高) */
 @media (max-width: 991.98px){
     .mobile-sheet{
-      max-height: 60vh;            /* ☆ 主要設定 */
+      max-height: 45vh;            /* ☆ 主要設定 */
       display: flex;               /* 讓內容可滾動但把拖把固定在上 */
       flex-direction: column;
     }
@@ -440,3 +440,19 @@
 .about-section .section-sub {
   font-size: 0.9rem;
 }
+
+
+/* 手机端（<768px）商品卡片再紧凑一些 */
+@media (max-width: 767.98px) {
+  .product-card {
+    min-height: auto;       /* 取消固定最小高度 */
+    padding: 10px;          /* 内边距稍微缩小 */
+  }
+  .product-img {
+    height: 100px;          /* 图片高度从 120px 缩到 100px */
+  }
+  /* 如果三栏还是太窄，可以在更小屏幕改成两栏 */
+
+}
+
+
