@@ -235,50 +235,41 @@
   </div>
 </div>
 
-<!-- -- 隱藏送出表單 -->
-<form id="orderForm" action="https://formspree.io/f/xdkonwgk" method="POST" style="display:none;">
-  <input id="latte"      name="latte"      type="number" value="0">
-  <input id="americano"  name="americano"  type="number" value="0">
-  <input id="souffle"    name="souffle"    type="number" value="0">
-  <input id="cappuccino" name="cappuccino" type="number" value="0">
-  <input id="espresso"   name="espresso"   type="number" value="0">
-  <input id="mocha"      name="mocha"      type="number" value="0">
-  <input id="caramac"    name="caramac"    type="number" value="0">
-  <input id="coldbrew"   name="coldbrew"   type="number" value="0">
-  <input id="hazel"      name="hazel"      type="number" value="0">
-  <input id="vanilla"    name="vanilla"    type="number" value="0">
-  <input type="hidden" id="order_summary" name="order_summary">
-  <input type="hidden" name="_subject" value="🛒 New Order!">
-  <!-- 新增純文字 mail_body -->
-  <input type="hidden" name="mail_body" id="mailBody">
-</form>
+  <!-- 隱藏送出表單 -->
+  <form id="orderForm" action="https://formspree.io/f/xdkonwgk" method="POST" style="display:none;">
+    <input id="latte"      name="latte"      type="number" value="0">
+    <input id="americano"  name="americano"  type="number" value="0">
+    <input id="souffle"    name="souffle"    type="number" value="0">
+    <input id="cappuccino" name="cappuccino" type="number" value="0">
+    <input id="espresso"   name="espresso"   type="number" value="0">
+    <input id="mocha"      name="mocha"      type="number" value="0">
+    <input id="caramac"    name="caramac"    type="number" value="0">
+    <input id="coldbrew"   name="coldbrew"   type="number" value="0">
+    <input id="hazel"      name="hazel"      type="number" value="0">
+    <input id="vanilla"    name="vanilla"    type="number" value="0">
+    <input type="hidden" id="order_summary" name="order_summary">
+    <input type="hidden" name="_subject" value="🛒 新訂單！">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="mail_body" id="mailBody">
+  </form>
 
-<footer class="bg-dark text-white text-center py-4 mt-5">© 2025 Jet Young</footer>
+  <footer class="bg-dark text-white text-center py-4 mt-5">© 2025 Jet Young</footer>
 
-<!-- ═════ Scripts ═════ -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+  <!-- Bootstrap & JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+  // Loading overlay 淡出
+  window.addEventListener('load',()=>{
+    const ov = document.getElementById('loading-overlay');
+    if(ov){
+      setTimeout(()=>{
+        ov.classList.add('fade-out');
+        setTimeout(()=>ov.style.display='none',300);
+      },300);
+    }
+  });
 
-window.addEventListener('load',()=>{ 
-  const ov = document.getElementById('loading-overlay');
-  if (ov) {
-    // 確保至少等 300ms 再消失，避免CSS transition沒跑完被隱藏
-    setTimeout(()=> {
-      ov.classList.add('fade-out');
-      setTimeout(()=> ov.style.display='none', 300);
-    }, 300);
-  }
-});
-  // Link-Only 保護
-  // const ALLOWED_TOKEN = "mySuperSecretToken123";
-  // if (new URLSearchParams(location.search).get("token") !== ALLOWED_TOKEN) {
-  //   document.write(`<div style="padding:2rem;font-size:1.2rem;text-align:center;color:#333;">
-  //     🔒 未經授權，請使用正確連結存取本頁
-  //   </div>`);
-  //   throw new Error("Unauthorized");
-  // }
-
-  /* 產生訂單號 */
+  // 產生訂單號
   function genOrderId(){
     const d = new Date();
     const ymd = d.toISOString().slice(0,10).replace(/-/g,'');
@@ -286,7 +277,7 @@ window.addEventListener('load',()=>{
     return `JY${ymd}${rnd}`;
   }
 
-  /* 商品設定 */
+  // 商品資料
   const items = [
     {k:'latte',n:'Latte',p:120},
     {k:'americano',n:'Americano',p:90},
@@ -300,30 +291,29 @@ window.addEventListener('load',()=>{
     {k:'vanilla',n:'Vanilla Latte',p:135},
   ];
 
-  /* DOM 參照 */
   const f     = document.getElementById('orderForm');
   const desk  = document.getElementById('desktopSummary');
   const mob   = document.getElementById('mobileSummary');
   const sheet = document.getElementById('mobileSheet');
 
-  /* 文字摘要（寄信用） */
   function buildLines(){
     let total=0, lines=[];
     items.forEach(({k,n,p})=>{
-      const el=f.elements[k];
+      const el = f.elements[k];
       if(!el) return;
-      const q=+el.value||0;
+      const q = +el.value||0;
       if(q){ lines.push(`${n} × ${q} = $${q*p}`); total+=q*p; }
     });
     return lines.length
-      ? [...lines,'—'.repeat(40),`Total $${total}`].join('\n')
+      ? [...lines,'—'.repeat(40),`總計 $${total}`].join('\n')
       : '';
   }
 
-  /* 明細＋表單 */
   function template(total,html){
     return `
-      <div class="text-end"><button type="button" class="btn-close close-summary"></button></div>
+      <div class="text-end">
+        <button type="button" class="btn-close close-summary"></button>
+      </div>
       <h5 class="text-primary fw-bold mb-3">訂單明細</h5>
       ${html}
       <hr>
@@ -340,158 +330,151 @@ window.addEventListener('load',()=>{
       <button class="btn btn-primary w-100" id="submitBtn" disabled>送出訂單</button>`;
   }
 
-  /* 渲染 */
   function render(box){
-    let total=0,itemHTML='';
+    let total=0, html='';
     items.forEach(({k,n,p})=>{
-      const el=f.elements[k];
-      if(!el) return;
-      const q=+el.value||0;
+      const el = f.elements[k], q = +el.value||0;
       if(q){
-        itemHTML+=`<div class="d-flex justify-content-between mb-2">
-                     <span>${n} × ${q}</span><span>$${q*p}</span>
-                   </div>`;
-        total+=q*p;
+        html += `<div class="d-flex justify-content-between mb-2">
+                   <span>${n} × ${q}</span><span>$${q*p}</span>
+                 </div>`;
+        total += q*p;
       }
     });
-    box.innerHTML = itemHTML
-      ? template(total,itemHTML)
+    box.innerHTML = html
+      ? template(total,html)
       : '<p class="text-center text-muted mb-0">(尚未選購)</p>';
   }
 
-  /* 更新數量 */
   function setQty(k,v){
     const el=f.elements[k];
     if(!el) return;
-    el.value=v;
+    el.value = v;
     document.querySelectorAll(`#${k}.qty-input`).forEach(i=>i.value=v);
-    f.order_summary.value=buildLines();
-    render(desk);render(mob);
+    f.order_summary.value = buildLines();
+    render(desk); render(mob);
     validate();
-    if(window.innerWidth<992&&v>0) sheet.classList.add('open');
+    if(window.innerWidth<992 && v>0) sheet.classList.add('open');
   }
 
-  /* 驗證 */
   function validate(){
-    const hasItem = items.some(({k})=>+f.elements[k]?.value);
-    const ok = [...f.elements].filter(el=>el.required).every(el=>el.value.trim());
-    document.querySelectorAll('#submitBtn').forEach(b=>b.disabled=!(hasItem&&ok));
+    const hasItem = items.some(({k})=> +f.elements[k]?.value );
+    const okFields = [...f.elements].filter(el=>el.required);
+    const ok = okFields.every(el=> el.value.trim() );
+    document.querySelectorAll('#submitBtn').forEach(b=> b.disabled = !(hasItem && ok));
   }
 
-  /* 綁定 ± */
   document.querySelectorAll('.qty-group').forEach(g=>{
-    const key=g.dataset.key, inp=f.elements[key];
-    g.querySelector('.plus').onclick = ()=> setQty(key,+inp.value+1);
-    g.querySelector('.minus').onclick= ()=> setQty(key,Math.max(0,+inp.value-1));
+    const key = g.dataset.key, inp = f.elements[key];
+    g.querySelector('.plus').onclick  = ()=> setQty(key, +inp.value+1);
+    g.querySelector('.minus').onclick = ()=> setQty(key, Math.max(0, +inp.value-1));
   });
 
-  /* 客戶欄即時驗證 */
-  document.body.addEventListener('input',e=>{ if(e.target.form===f) validate(); });
+  document.body.addEventListener('input', e=>{
+    if(e.target.form===f) validate();
+  });
 
-  /* 送出訂單 */
-  document.body.addEventListener('click',e=>{
-    if(e.target.id==='submitBtn'){
-      e.preventDefault();
-      const orderText=buildLines();
-      f.order_summary.value=orderText;
+  document.body.addEventListener('click', e=>{
+    if(e.target.id !== 'submitBtn') return;
+    e.preventDefault();
 
-      const fd=new FormData();
-      items.forEach(({k,n})=>{
-        const q=+f.elements[k].value||0;
-        if(q) fd.append(n,q);
-      });
-      // 取表單區
-      const area = sheet.classList.contains('open')? mob: desk;
-      ['customer_name','customer_phone','customer_company','customer_addr']
-        .forEach(name=>{
-          const el=area.querySelector(`[name="${name}"]`);
-          if(el&&el.value.trim()) fd.append(name,el.value.trim());
-        });
-      fd.append('order_summary',orderText);
+    // 重建摘要
+    const 摘要 = buildLines();
+    f.order_summary.value = 摘要;
 
-      fetch(f.action,{method:'POST',body:fd,headers:{Accept:'application/json'}})
-      .then(()=>{
-        const orderId=genOrderId();
-        // 取欄位
-        const name  = area.querySelector('[name="customer_name"]').value.trim();
-        const phone = area.querySelector('[name="customer_phone"]').value.trim();
-        const addr  = area.querySelector('[name="customer_addr"]').value.trim();
-        const comp  = area.querySelector('[name="customer_company"]').value.trim();
+    // 一次帶入整張表單
+    const fd = new FormData(f);
 
-        // 生成 mail_body
-        const bodyText =
-`訂單號：${orderId}
-收件人：${name}
-電話　：${phone}
-公司　：${comp}
-地址　：${addr}
+    // 決定哪個區域正在顯示
+    const 區域 = sheet.classList.contains('open') ? mob : desk;
+    const 收件人 = 區域.querySelector('[name="customer_name"]').value.trim();
+    const 電話   = 區域.querySelector('[name="customer_phone"]').value.trim();
+    const 公司   = 區域.querySelector('[name="customer_company"]').value.trim();
+    const 地址   = 區域.querySelector('[name="customer_addr"]').value.trim();
+
+    // 準備中文純文字內文
+    const 內文 = 
+`訂單號：${genOrderId()}
+收件人：${收件人}
+電話　：${電話}
+公司　：${公司}
+地址　：${地址}
 
 ─── 訂單明細 ───
-${buildLines()}
+${摘要}
 `;
-        document.getElementById('mailBody').value = bodyText;
 
-        // 顯示 Modal
-        const box=document.getElementById('confirmBody');
-        box.innerHTML=
-`<div class="text-start small">
+    // 覆蓋隱藏欄位
+    fd.set('_subject',  `🛒 新訂單｜${收件人}`);
+    fd.set('mail_body', 內文);
+
+    fetch(f.action, {
+      method:'POST',
+      body:fd,
+      headers:{ Accept:'application/json' }
+    })
+    .then(()=>{
+      // 顯示 Modal
+      const orderId = genOrderId();
+      const box = document.getElementById('confirmBody');
+      box.innerHTML = `
+<div class="text-start small">
   <div><strong>訂單號：</strong>${orderId}</div>
-  <div><strong>收件人：</strong>${name}</div>
-  <div><strong>電話　：</strong>${phone}</div>
-  ${comp?`<div><strong>公司　：</strong>${comp}</div>`:''}
-  <div><strong>地址　：</strong>${addr}</div>
+  <div><strong>收件人：</strong>${收件人}</div>
+  <div><strong>電話　：</strong>${電話}</div>
+  ${公司? `<div><strong>公司　：</strong>${公司}</div>` : ''}
+  <div><strong>地址　：</strong>${地址}</div>
   <hr class="my-2">
-  <pre class="mb-0" style="white-space:pre-wrap;">${buildLines()}</pre>
+  <pre class="mb-0" style="white-space:pre-wrap;">${摘要}</pre>
   <hr class="my-2">
   <div class="text-danger fw-bold">※ 請截圖留存，司機收款時出示即可</div>
 </div>`;
-        new bootstrap.Modal('#confirmModal').show();
-        reset();
-      })
-      .catch(()=>alert('送出失敗，請稍後再試'));
-    }
+      new bootstrap.Modal('#confirmModal').show();
+      reset();
+    })
+    .catch(()=>alert('送出失敗，請稍後再試'));
   });
 
-  /* 重置 */
   function reset(){
-    items.forEach(({k})=>setQty(k,0));
+    items.forEach(({k})=> setQty(k,0));
     f.reset();
-    render(desk);render(mob);
+    render(desk); render(mob);
     sheet.classList.remove('open');
   }
 
-  /* Bottom-sheet 開關 & 點擊展開 */
-  sheet.addEventListener('click',e=>{
-    const isOpen=sheet.classList.contains('open');
-    const isHandle=e.target.classList.contains('handle');
-    const isCloseX=e.target.closest('.close-summary');
-    if(isHandle){ sheet.classList.toggle('open'); return; }
-    if(isCloseX){ sheet.classList.remove('open'); return; }
-    if(!isOpen){ sheet.classList.add('open'); }
+  // Bottom-sheet 行為
+  sheet.addEventListener('click', e=>{
+    const isOpen = sheet.classList.contains('open');
+    if(e.target.classList.contains('handle')){
+      sheet.classList.toggle('open');
+    } else if(e.target.closest('.close-summary')){
+      sheet.classList.remove('open');
+    } else if(!isOpen){
+      sheet.classList.add('open');
+    }
   });
-
-  /* 桌機版點 X 關閉 */
-  document.body.addEventListener('click',e=>{
+  document.body.addEventListener('click', e=>{
     if(e.target.classList.contains('close-summary'))
       sheet.classList.remove('open');
   });
 
-  /* Promo-bar 跑馬燈 */
-  document.addEventListener('DOMContentLoaded',()=>{
-    const msgs=document.querySelectorAll('.promo-bar .promo-message');
+  // Promo-bar 跑馬燈
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const msgs = document.querySelectorAll('.promo-bar .promo-message');
     if(!msgs.length) return;
     let i=0; msgs[0].classList.add('active');
     setInterval(()=>{
       msgs[i].classList.remove('active');
-      i=(i+1)%msgs.length;
+      i = (i+1) % msgs.length;
       msgs[i].classList.add('active');
     },3500);
   });
 
-
-  /* 初始渲染 */
-  render(desk); render(mob); validate();
-</script>
+  // 初始渲染
+  render(desk);
+  render(mob);
+  validate();
+  </script>
 
 </body>
 </html>
