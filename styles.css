@@ -605,7 +605,7 @@ body {
     transform:translateY(calc(100% - 60px));
     transition:transform .35s ease;
     /* ❷ 打開時最多佔  視窗 */
-    height:39vh;              
+    height:45vh;              
     display:flex;
     flex-direction:column;
   }
