@@ -70,7 +70,7 @@
   
   /* ---------- Hero (Gradient background) ---------- */
   .hero-section{
-    height:58vh;display:flex;align-items:center;justify-content:center;position:relative;
+    height:52vh;display:flex;align-items:center;justify-content:center;position:relative;
     background:linear-gradient(135deg,var(--blue-600) 0%,var(--blue-500) 50%,#5cabff 100%);
     color:#fff;text-align:center
   }
@@ -421,3 +421,19 @@
   opacity: 1;
   transform: translateY(0);
 }
+
+
+
+/* -------- 讓桌機顯示 4 欄 -------- */
+@media (min-width: 992px){
+  .products-row .col-4{
+    flex: 0 0 25%;     /* 4 × 25% = 100% */
+    max-width: 25%;
+  }
+}
+/* 只縮小首頁 Hero 裏那顆按鈕 ── 不影響其他 .btn */
+.hero-content .btn{
+  padding: .55rem 1.4rem;   /* 高度、寬度一起變小 */
+  font-size: .9rem;         /* 字體跟著變小 */
+}
+
