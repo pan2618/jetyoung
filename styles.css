@@ -345,36 +345,155 @@
   pointer-events:none;background:transparent;
 }
 
+/* 超窄手機：把數量按鈕縮小一點，避免跑出卡片外 */
+@media (max-width: 375px) {
+  .products-row .col-4 {
+    flex: 0 0 50%;      /* 窄到 375px 以下時改兩欄比較實用 */
+    max-width: 50%;
+  }
+  .product-card {
+    padding: 8px;       /* 再收一點 padding */
+  }
+  .btn-qty {
+    width: 24px;
+    height: 24px;
+  }
+  .qty-input {
+    width: 32px;
+  }
+}
+
 
 /* 讓 bottom-sheet 最高不超過 65vh (視窗高) */
-@media (max-width: 991.98px){
+/* @media (max-width: 991.98px){
     .mobile-sheet{
-      max-height: 45vh;            /* ☆ 主要設定 */
-      display: flex;               /* 讓內容可滾動但把拖把固定在上 */
+      max-height: 45vh;            
+      display: flex;               
       flex-direction: column;
     }
     .mobile-sheet .handle{
-      flex: 0 0 24px;              /* 拖把區固定高度 */
+      flex: 0 0 24px;            
     }
-    /* 兩欄排版：姓名 / 電話、公司 / 地址 縮短高度 -------------- */
+   
     .contact-grid{
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: .1rem;
     }
-    .contact-grid .full{          /* 需要整列的欄位加 class="full" */
+    .contact-grid .full{         
       grid-column: 1 / 3;
     }
   }
 
-  
+   */
   
 
 /* ============ 隱藏 bottom-sheet 把手 ============ */
-.mobile-sheet .handle{
+/* .mobile-sheet .handle{
     display:none;
   }
-  
+   */
+
+  /* -------- 讓桌機顯示 4 欄 -------- */
+/* @media (min-width: 992px){
+  .products-row .col-4{
+    flex: 0 0 25%;    
+    max-width: 25%;
+  }
+} */
+
+/* 縮小明細中的「送出訂單」按鈕 */
+#submitBtn {
+  /* 不再強制寬度 100% */
+  width: auto !important;
+  /* 最大寬度，超過就折行 */
+  max-width: 180px;
+  /* 水平置中 */
+  display: block;
+  margin: 0.8rem auto 0;
+  /* 縮小字體、內距 */
+  font-size: 0.9rem;
+  padding: 0.5rem 2rem;
+}
+
+
+
+/* ===== 手机商品三栏 & 卡片自适应 ===== */
+@media (max-width: 767.98px) {
+  /* 三栏布局 */
+  .products-row .col-4 {
+    flex: 0 0 33.333%;    /* 3 × 33.3% */
+    max-width: 33.333%;
+  }
+  /* 取消死板的最小高度，收缩 padding */
+  .product-card {
+    min-height: auto;
+    padding: 10px;
+  }
+  .product-img {
+    height: 100px;
+  }
+}
+
+/* ===== Bottom‐sheet 初始露出 & 最大高度 ===== */
+@media (max-width: 991.98px) {
+  .mobile-sheet {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 2000;
+    background: #fff;
+    box-shadow: 0 -4px 12px rgba(0,0,0,.15);
+    border-radius: 16px 16px 0 0;
+
+    /* 初始只露 80px */
+    transform: translateY(calc(100% - 50px));
+    transition: transform .35s ease;
+
+    /* 展开后内容区最高 45vh */
+    max-height: 90vh; /* 先撑满，再靠 open 解除 translateY */
+    display: flex;
+    flex-direction: column;
+  }
+  /* 展开时移除收起的 translateY */
+  .mobile-sheet.open {
+    transform: translateY(0);
+  }
+ 
+  /* 底板内容滚动区域 */
+  .sheet-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 0 1rem 1.25rem;
+  }
+  /* 表单两栏布局 */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .1rem;
+  }
+  .contact-grid .full {
+    grid-column: 1 / 3;
+  }
+}
+
+/* ===== 保留商品列表底部安全区，不被底板遮住 ===== */
+body {
+  padding-bottom: 80px; /* 与初始露出的 80px 保持一致 */
+}
+
+/* ===== 手机商品卡片三栏 ===== */
+@media (max-width: 767.98px) {
+  .products-row .col-4 {
+    flex: 0 0 33.333%;
+    max-width: 33.333%;
+  }
+}
+
+/* ===== 为了不让 bottom-sheet 完全遮住商品列表，给 main 容器下方留空 ===== */
+body {
+  padding-bottom: 80px; /* 刚好露出底板预览高度 */
+}
+
 
   /* 關閉按鈕：比預設再大一點、沒邊框 */
 .close-summary{
@@ -424,13 +543,7 @@
 
 
 
-/* -------- 讓桌機顯示 4 欄 -------- */
-@media (min-width: 992px){
-  .products-row .col-4{
-    flex: 0 0 25%;     /* 4 × 25% = 100% */
-    max-width: 25%;
-  }
-}
+
 /* 只縮小首頁 Hero 裏那顆按鈕 ── 不影響其他 .btn */
 .hero-content .btn{
   padding: .55rem 1.4rem;   /* 高度、寬度一起變小 */
