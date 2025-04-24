@@ -32,11 +32,61 @@
       <div class="collapse navbar-collapse" id="nav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="order.html">Order</a></li>
+          <li class="nav-item">
+            <a id="orderLink"
+               class="nav-link disabled"
+               href="order.html"
+               aria-disabled="true">
+              Order
+            </a>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="catalog.html">Catalog</a></li>
         </ul>
       </div>
     </div>
   </nav>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('orderLink');
+      // 讀 flag，看有沒有進過 order.html
+      const visited = localStorage.getItem('hasVisitedOrderPage') === 'true';
+      if (visited) {
+        // 解除 disabled
+        btn.classList.remove('disabled');
+        btn.removeAttribute('aria-disabled');
+        // （若之前綁過 preventDefault，也可拿掉 listener）
+      } else {
+        // 確保 disabled，並阻擋跳轉
+        btn.classList.add('disabled');
+        btn.setAttribute('aria-disabled', 'true');
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          alert('請透過指定連結進入訂單頁面');
+        });
+      }
+    });
+        document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('orderLink');
+      // 看之前有沒有進過訂單頁（order.html）
+      const visited = localStorage.getItem('hasVisitedOrderPage') === 'true';
+
+      if (visited) {
+        // 已經開過 → 解禁
+        btn.classList.remove('disabled');
+        btn.removeAttribute('aria-disabled');
+      } else {
+        // 還沒開過 → 確保 disabled，並記得阻擋預設跳轉
+        btn.classList.add('disabled');
+        btn.setAttribute('aria-disabled', 'true');
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          alert('請先透過指定連結進入訂單頁面');
+        });
+      }
+    });
+    </script>
+    
 
  <!-- 原來這是你的 Hero Intro -->
 <header class="hero-section">
@@ -255,7 +305,7 @@
     const observerOptions = {
       root: null,         // 以 viewport 為根
       rootMargin: '0px',
-      threshold: 0.3     
+      threshold: 0.1     
     };
   
     const observer = new IntersectionObserver((entries) => {
