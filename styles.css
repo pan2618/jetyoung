@@ -566,18 +566,6 @@ body {
 }
 
 
-/* 手机端（<768px）商品卡片再紧凑一些 */
-@media (max-width: 767.98px) {
-  .product-card {
-    min-height: auto;       /* 取消固定最小高度 */
-    padding: 10px;          /* 内边距稍微缩小 */
-  }
-  .product-img {
-    height: 100px;          /* 图片高度从 120px 缩到 100px */
-  }
-  /* 如果三栏还是太窄，可以在更小屏幕改成两栏 */
-
-}
 
 @media (max-width: 991.98px){
   .mobile-sheet{
@@ -605,7 +593,7 @@ body {
     transform:translateY(calc(100% - 60px));
     transition:transform .35s ease;
     /* ❷ 打開時最多佔  視窗 */
-    height:45vh;              
+    height:42vh;              
     display:flex;
     flex-direction:column;
   }
@@ -627,11 +615,6 @@ body {
 
 /* ======= 讓商品卡片更緊湊 (會覆寫舊設定) ======= */
 
-/* 1. 取消固定最小高度、縮小內邊距 */
-.product-card{
-  min-height: auto;         /* 原本 340px → 自動撐高即可 */
-  padding: 12px 10px;       /* 原本 18px */
-}
 
 /* 2. 圖片縮小一點，下面留的空也少一些 */
 .product-img{
