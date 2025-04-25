@@ -73,6 +73,7 @@
     height:50vh;display:flex;align-items:center;justify-content:center;position:relative;
     background:linear-gradient(135deg,var(--blue-600) 0%,var(--blue-500) 50%,#5cabff 100%);
     color:#fff;text-align:center
+    
   }
   .hero-section::after{content:\"\";position:absolute;inset:0;background:rgba(0,0,0,.18)}
   .hero-content{position:relative;padding:0 1rem;max-width:720px}
@@ -88,6 +89,35 @@
   .about-section .col-md-4 > .animate-on-scroll {
     min-height: 120px; /* 或你想要的更大高度 */
   }
+
+  /* ---------- Hero (背景圖改版) ---------- */
+.hero-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;              /* 保留你原本的高度 */
+  color: #fff;
+  text-align: center;
+  background-image: url('images/messageImage_1745520908214.jpg');  /* ← 換成你的背景圖 */
+  background-size: cover;
+  background-position: center;
+}
+
+/* 半透明遮罩（選填，用來加強文字可讀性） */
+.hero-section::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* 讓內部文字置於遮罩之上 */
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
   
 
   
