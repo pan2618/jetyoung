@@ -96,7 +96,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 55vh;              /* 保留你原本的高度 */
+  height: 52vh;              /* 保留你原本的高度 */
   color: #fff;
   text-align: center;
   background-image: url('images/messageImage_1745520908214.jpg');  /* ← 換成你的背景圖 */
@@ -759,5 +759,7 @@ body {
   object-fit: contain;
   margin-bottom: 1rem;
 }
+
+
 
 
