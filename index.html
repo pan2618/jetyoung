@@ -32,14 +32,15 @@
       <div class="collapse navbar-collapse" id="nav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
-          <li class="nav-item">
+          <li class="nav-item"><a class="nav-link active" href="order.html">Order</a></li>
+          <!-- <li class="nav-item">
             <a id="orderLink"
                class="nav-link disabled"
                href="order.html"
                aria-disabled="true">
               Order
             </a>
-          </li>
+          </li> -->
           <li class="nav-item"><a class="nav-link" href="catalog.html">Catalog</a></li>
         </ul>
       </div>
@@ -75,8 +76,7 @@
         // 已經開過 → 解禁
         btn.classList.remove('disabled');
         btn.removeAttribute('aria-disabled');
-      } else {
-        // 還沒開過 → 確保 disabled，並記得阻擋預設跳轉
+
         btn.classList.add('disabled');
         btn.setAttribute('aria-disabled', 'true');
         btn.addEventListener('click', e => {
