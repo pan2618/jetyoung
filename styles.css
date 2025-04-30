@@ -96,7 +96,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 54vh;              /* 保留你原本的高度 */
+  height: 52vh;              /* 保留你原本的高度 */
   color: #fff;
   text-align: center;
   background-image: url('images/messageImage_1745520908214.jpg');  /* ← 換成你的背景圖 */
@@ -623,7 +623,7 @@ body {
     transform:translateY(calc(100% - 60px));
     transition:transform .35s ease;
     /* ❷ 打開時最多佔  視窗 */
-    height:48vh;              
+    height:55vh;              
     display:flex;
     flex-direction:column;
   }
@@ -687,6 +687,9 @@ body {
   cursor: not-allowed;
 }
 
+.contact-grid small.text-muted {
+  margin-bottom: 0.30rem !important;
+}
 
 
 
@@ -761,5 +764,58 @@ body {
 }
 
 
+/* ❶ 先把原生 input 的文字顏色設成透明 → 等同「空白」 */
+#delivery_date_picker { color: transparent; }
+
+/* ❷ 改用 ::before 注入文字 (只在 value 為空時出現) */
+#delivery_date_picker::before {
+  content: attr(data-placeholder);   /* 讀自訂 data-placeholder */
+  color: #999;
+  font-size: 0.875rem;
+  font-family: inherit;
+}
+
+/* ❸ 當 input 一旦有值，讓文字顏色恢復正常 */
+#delivery_date_picker:valid   { color: inherit;  }
+#delivery_date_picker:valid::before { content:none; }
 
 
+/* 讓 input 能放置偽元素 */
+.placeholder-date { position: relative; }
+
+/* ① 隱藏預設 yyyy/mm/dd（Chrome/Edge/Safari 都屬於 WebKit/Blink） */
+.placeholder-date:invalid::-webkit-datetime-edit,
+.placeholder-date:invalid::-webkit-datetime-edit-text,
+.placeholder-date:invalid::-webkit-datetime-edit-year-field,
+.placeholder-date:invalid::-webkit-datetime-edit-month-field,
+.placeholder-date:invalid::-webkit-datetime-edit-day-field {
+  color: transparent;
+}
+
+/* ② 疊上自訂 placeholder —— 只有在欄位為 invalid（= 尚未選日）時才顯示 */
+.placeholder-date:invalid::before {
+  content: attr(data-placeholder);
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  pointer-events: none;           /* 讓點擊事件仍落到 input 本身 */
+  font-size: 1rem;
+}
+/* 針對訂單明細裡的收件人 / 電話 / 日期 / 地址等欄位 */
+.contact-grid .form-control{
+  margin-bottom: .5rem;        /* 原本 .mb-2 = .5 rem；縮小到 .5 rem 以內可再調 */
+}
+
+/* 日期欄位下方那行小提示文字 */
+.contact-grid small{
+  margin-top : .25rem;         /* 與上一行貼緊一點 */
+  margin-bottom: .25rem;       /* 與下一欄位距離再縮小 */
+  display:block;               /* 保留換行 */
+}
+
+.order-note{
+  color:#ff4d4f;     /* 想要的紅 */
+  margin:.25rem 0;   /* 之前的縮排設定 */
+}
