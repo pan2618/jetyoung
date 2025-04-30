@@ -14,6 +14,10 @@
 <!-- Bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="styles.css"><!-- 你的主題變數 -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+/>
 <style>
   /* ═════ NAVBAR ═════ */
   nav.navbar{background:#fff;border-bottom:1px solid var(--border);}
@@ -77,6 +81,11 @@
       height: 90px;          /* 或 auto，看你要讓圖片多高 */
     }
   }
+    /* 只動這兩條，其他都不用改 */
+    #delivery_date_picker:invalid {
+    color: #999;
+  }
+
   </style>
   
 </head>
@@ -117,19 +126,37 @@
   </div>
 </div>
 
-<!-- NAV -->
-<nav class="navbar navbar-expand-lg">
-  <div class="container">
-    <a class="navbar-brand fw-bold text-primary" href="index.html">JET YOUNG</a>
-    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
-    <div class="collapse navbar-collapse" id="nav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-        <li class="nav-item"><a class="nav-link active" href="order.html">Order</a></li>
-      </ul>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg bg-white">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">JET YOUNG</a>
+      <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <!-- Home 仍是 active -->
+            <a class="nav-link active" href="index.html">Home</a>
+          </li>
+        
+          <!-- 先加 disabled / aria-disabled；一定要有 id="orderLink" -->
+          <li class="nav-item">
+            <a class="nav-link disabled"
+               id="orderLink"
+               href="order.html"
+               aria-disabled="true">
+              Order
+            </a>
+          </li>
+        
+          <li class="nav-item">
+            <a class="nav-link" href="catalog.html">Catalog</a>
+          </li>
+        </ul>
+        
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
 <!-- MAIN -->
 <div class="container">
@@ -149,11 +176,11 @@
         <input class="qty-input" id="latte" name="latte" type="number" value="0" readonly>
         <button class="btn-qty plus">＋</button>
       </div>
-      <small class="text-muted">點擊「＋」即可新增</small>
+      <small class="text-muted">點擊或長按「＋」即可新增商品</small>
     </div></div>
 
     <div class="col-4"><div class="card product-card text-center">
-      <img src="images/195184_1.jpg" class="product-img" alt="Americano">
+      <img src="images/195184_1.jpgg" class="product-img" alt="Americano">
       <h6 class="fw-semibold mt-3 mb-1">Americano</h6>
       <div class="price text-primary fw-bold mb-2">$90</div>
       <div class="qty-group mb-2" data-key="americano">
@@ -267,6 +294,9 @@
     <input type="hidden" name="_subject" value="🛒 新訂單！">
     <input type="hidden" name="_template" value="table">
     <input type="hidden" name="mail_body" id="mailBody">
+    <input id="customer_addr" name="customer_addr" type="hidden">
+    <!-- ↓ 新增：送達時間隱藏欄位 ↓ -->
+    <input type="hidden" id="delivery_time" name="delivery_time">
   </form>
 
   <footer class="bg-dark text-white text-center py-4 mt-5">© 2025 Jet Young</footer>
@@ -325,26 +355,41 @@
       : '';
   }
 
-  function template(total,html){
-    return `
-      <div class="text-end">
-        <button type="button" class="btn-close close-summary"></button>
-      </div>
-      <h5 class="text-primary fw-bold mb-3">訂單明細</h5>
-      ${html}
-      <hr>
-      <div class="d-flex justify-content-between fw-bold mb-3">
-        <span>總計</span><span>$${total}</span>
-      </div>
-      <div class="contact-grid mb-3">
-        <input class="form-control" name="customer_name" placeholder="收件人姓名*" required>
-        <input class="form-control" name="customer_phone" placeholder="電話*" required>
-        <input class="form-control full" name="customer_company" placeholder="公司 (可留空)">
-        <textarea class="form-control full" name="customer_addr" rows="2" placeholder="地址*" required></textarea>
-      </div>
-      <small class="text-muted d-block mb-3">＊貨到付款，司機收款</small>
-      <button class="btn btn-primary w-100" id="submitBtn" disabled>送出訂單</button>`;
-  }
+  function template(total, html) {
+  return `
+    <div class="text-end">
+      <button type="button" class="btn-close close-summary"></button>
+    </div>
+    <h5 class="text-primary fw-bold mb-3">訂單明細</h5>
+    ${html}
+    <hr>
+    <div class="d-flex justify-content-between fw-bold mb-3">
+      <span>總計</span><span>$${total}</span>
+    </div>
+
+    <div class="contact-grid mb-3">
+      <input class="form-control" name="customer_name" placeholder="收件人姓名*" required>
+      <input class="form-control" name="customer_phone" placeholder="電話*" required>
+
+        <!-- ← 新增：送達日期 -->
+      <input type="date"
+        id="delivery_date_picker"
+        name="delivery_date"
+        type="date"
+        class="form-control full mb-2 placeholder-date"
+        data-placeholder="請選擇預計到貨日期"
+            required>
+      <small class="text-muted mb-2 d-block">今天下單，明天即可到貨</small>
+          <textarea class="form-control full" 
+                    name="customer_addr" 
+                    rows="2" 
+                    placeholder="地址*" 
+                    required></textarea>
+    </div>
+    <small class="text-danger d-block order-note">＊貨到付款，司機收款</small>
+    <button class="btn btn-primary w-100" id="submitBtn" disabled>送出訂單</button>
+  `;
+}
 
   function render(box){
     let total=0, html='';
@@ -390,66 +435,69 @@
     if(e.target.form===f) validate();
   });
 
-  document.body.addEventListener('click', e=>{
-    if(e.target.id !== 'submitBtn') return;
-    e.preventDefault();
+  document.body.addEventListener('click', e => {
+  if (e.target.id !== 'submitBtn') return;
+  e.preventDefault();
 
-    // 重建摘要
-    const 摘要 = buildLines();
-    f.order_summary.value = 摘要;
+  // 重建摘要
+  const 摘要 = buildLines();
+  f.order_summary.value = 摘要;
 
-    // 一次帶入整張表單
-    const fd = new FormData(f);
+  // 一次帶入整張表單
+  const fd = new FormData(f);
 
-    // 決定哪個區域正在顯示
-    const 區域 = sheet.classList.contains('open') ? mob : desk;
-    const 收件人 = 區域.querySelector('[name="customer_name"]').value.trim();
-    const 電話   = 區域.querySelector('[name="customer_phone"]').value.trim();
-    const 公司   = 區域.querySelector('[name="customer_company"]').value.trim();
-    const 地址   = 區域.querySelector('[name="customer_addr"]').value.trim();
+  // 取得欄位值
+  const 區域   = sheet.classList.contains('open') ? mob : desk;
+  const 收件人 = 區域.querySelector('[name="customer_name"]').value.trim();
+  const 電話   = 區域.querySelector('[name="customer_phone"]').value.trim();
+  const 時間   = document.getElementById('delivery_time_picker').value;  // 新增
+  const 地址   = 區域.querySelector('[name="customer_addr"]').value.trim();
 
-    // 準備中文純文字內文
-    const 內文 = 
+  // 覆蓋隱藏欄位
+  fd.set('delivery_time', 時間);
+
+  // 準備中文純文字內文
+  const 內文 = 
 `訂單號：${genOrderId()}
 收件人：${收件人}
 電話　：${電話}
-公司　：${公司}
+送達時間：${時間}
 地址　：${地址}
 
 ─── 訂單明細 ───
 ${摘要}
 `;
+  fd.set('_subject', `🛒 新訂單｜${收件人}`);
+  fd.set('mail_body', 內文);
 
-    // 覆蓋隱藏欄位
-    fd.set('_subject',  `🛒 新訂單｜${收件人}`);
-    fd.set('mail_body', 內文);
+  fetch(f.action, {
+    method: 'POST',
+    body: fd,
+    headers: { Accept: 'application/json' }
+  })
+  .then(() => {
+    // 顯示 Modal
+    const orderId = genOrderId();
+    const box = document.getElementById('confirmBody');
+    box.innerHTML = `
+      <div class="text-start small">
+        <div><strong>訂單號：</strong>${orderId}</div>
+        <div><strong>收件人：</strong>${收件人}</div>
+        <div><strong>電話　：</strong>${電話}</div>
+        <div><strong>送達時間：</strong>${時間}</div>
+        <div><strong>地址　：</strong>${地址}</div>
+        <hr class="my-2">
+        <pre class="mb-0" style="white-space:pre-wrap;">${摘要}</pre>
+        <hr class="my-2">
+        <div class="text-danger fw-bold">※ 如有需要請截圖留存，司機收款時出示即可</div>
+      </div>`;
+    new bootstrap.Modal('#confirmModal').show();
+    reset();
+  })
+  .catch(() => alert('送出失敗，請稍後再試'));
+});
 
-    fetch(f.action, {
-      method:'POST',
-      body:fd,
-      headers:{ Accept:'application/json' }
-    })
-    .then(()=>{
-      // 顯示 Modal
-      const orderId = genOrderId();
-      const box = document.getElementById('confirmBody');
-      box.innerHTML = `
-<div class="text-start small">
-  <div><strong>訂單號：</strong>${orderId}</div>
-  <div><strong>收件人：</strong>${收件人}</div>
-  <div><strong>電話　：</strong>${電話}</div>
-  ${公司? `<div><strong>公司　：</strong>${公司}</div>` : ''}
-  <div><strong>地址　：</strong>${地址}</div>
-  <hr class="my-2">
-  <pre class="mb-0" style="white-space:pre-wrap;">${摘要}</pre>
-  <hr class="my-2">
-  <div class="text-danger fw-bold">※ 請截圖留存，司機收款時出示即可</div>
-</div>`;
-      new bootstrap.Modal('#confirmModal').show();
-      reset();
-    })
-    .catch(()=>alert('送出失敗，請稍後再試'));
-  });
+
 
   function reset(){
     items.forEach(({k})=> setQty(k,0));
@@ -532,9 +580,76 @@ document.addEventListener('click', e=>{
   }
 });
 
+// ===== 長按快速加減 =====
+document.querySelectorAll('.btn-qty').forEach(btn=>{
+  let intervalId;
+
+  // 共用的「執行一次」小函式
+  const doAction = () => {
+    const group = btn.closest('.qty-group');
+    const key   = group.dataset.key;
+    const cur   = +document.getElementById(key).value || 0;
+    if (btn.classList.contains('plus')) {
+      setQty(key, cur + 1);
+    } else {
+      setQty(key, Math.max(0, cur - 1));
+    }
+  };
+
+  // 按下去：先執行一次，再啟動重複
+  btn.addEventListener('mousedown', e => {
+    e.preventDefault();
+    doAction();
+    intervalId = setInterval(doAction, 150); // 每 150ms 重複
+  });
+  // 觸控按下去也一樣
+  btn.addEventListener('touchstart', e => {
+    e.preventDefault();
+    doAction();
+    intervalId = setInterval(doAction, 150);
+  }, {passive:false});
+
+  // 放開或滑出按鈕範圍時清除
+  ['mouseup','mouseleave','touchend','touchcancel'].forEach(evt=>{
+    btn.addEventListener(evt, () => {
+      clearInterval(intervalId);
+    });
+  });
+});
+
+  /* ───── 日期欄位：點擊 / 聚焦就開面板 ───── */
+  document.addEventListener('DOMContentLoaded', () => {
+    const $date = document.getElementById('delivery_date_picker');
+  
+    // ① 先嘗試使用瀏覽器原生 showPicker (Chrome 97+ / Edge / Safari)
+    const openNative = () => $date.showPicker && $date.showPicker();
+  
+    // ② 如果瀏覽器不支援，就套 flatpickr 當後援
+    const enableFlatpickr = () => {
+      if ($date._fp) return;          // 只初始化一次
+      flatpickr($date, {
+        dateFormat : 'Y-m-d',
+        defaultDate: null,            // 預設空白
+        locale     : 'zh',            // 中文介面
+        onOpen     : () => $date.blur()  // 打開時先把原生 focus 拿掉
+      });
+      $date._fp.open();               // 直接打開面板
+    };
+  
+    // ③ 綁定 click / focus 事件：能原生就用原生，否則 fallback
+    ['click','focus'].forEach(evt =>
+      $date.addEventListener(evt, () => (openNative() || enableFlatpickr()))
+    );
+  });
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 
-  </script>
+
+
+  
 
 </body>
 </html>
